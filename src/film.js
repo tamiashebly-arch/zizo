@@ -48,6 +48,7 @@ const svg = (n, w = 20) => `<svg viewBox="0 0 24 24" width="${w}" height="${w}" 
 // ------------------------------------------------------------------ the film
 export function createFilm({ THREE, scene, camera, renderer, site, building, bloom, W, H, overlay, caption }) {
   const U = building.userData;
+  const OW = 1920, OH = 1080; // overlay coordinate space (CSS-scaled to the render size)
   const V3 = (x, y, z) => new THREE.Vector3(x, y, z);
   const A = U.anchors;
 
@@ -64,10 +65,10 @@ export function createFilm({ THREE, scene, camera, renderer, site, building, blo
     // scene 4 - what could happen
     [29.2, [10, 16, 54], [5, 12, 0], 36], [33, [0, 14, 60], [0, 11, 0], 36], [37, [-3, 13, 60], [-2, 11, 0], 36], [40.5, [6, 14, 56], [2, 12, 0], 36],
     // scene 5 - impact, then focus on the A/C failure
-    [44, [13, 13.8, 40], [14, 13.6, -2], 34], [47, [14, 14, 31], [15.5, 13.6, -2], 32],
+    [44, [12, 13.5, 52], [12, 13, -2], 34], [47, [14, 14, 48], [15.5, 13.6, -2], 33],
     // scene 6 - work order pathway
-    [48.2, [12, 15, 36], [10, 15, 4], 34], [50.5, [2, 16, 38], [2, 15, 4], 34], [52.3, [-6, 13, 38], [-6, 12, 4], 34],
-    [54, [2, 10.5, 40], [2, 9.5, 6], 34], [55.6, [13.5, 13.8, 27], [16, 13.4, -1], 32], [58.5, [16, 15, 27], [17, 15, 0], 32],
+    [48.2, [12, 15, 46], [10, 15, 4], 34], [50.5, [2, 16, 48], [2, 15, 4], 34], [52.3, [-6, 13, 48], [-6, 12, 4], 34],
+    [54, [2, 10.5, 50], [2, 9.5, 6], 34], [55.6, [13.5, 13.8, 31], [16, 13.4, -1], 32], [58.5, [16, 15, 32], [17, 15, 0], 32],
     [60.4, [8, 18, 44], [6, 17, 12], 34],
     // scene 7 - Technical Affairs
     [63, [0, 19, 72], [0, 12.5, 14], 36], [74, [2, 19, 68], [0, 12.5, 14], 36],
@@ -119,7 +120,7 @@ export function createFilm({ THREE, scene, camera, renderer, site, building, blo
       if (vis) {
         tmp.copy(typeof p.anchor === 'function' ? p.anchor() : p.anchor).project(camera);
         if (tmp.z > 1 || tmp.z < -1) vis = false;
-        p.el.style.transform = `translate(${(tmp.x * 0.5 + 0.5) * W}px,${(-tmp.y * 0.5 + 0.5) * H}px)`;
+        p.el.style.transform = `translate(${(tmp.x * 0.5 + 0.5) * OW}px,${(-tmp.y * 0.5 + 0.5) * OH}px)`;
       }
       p.el.style.opacity = vis ? p.a.toFixed(3) : 0;
       p.el.style.visibility = vis ? 'visible' : 'hidden';
@@ -174,7 +175,7 @@ export function createFilm({ THREE, scene, camera, renderer, site, building, blo
   const P = {
     hvacF: { t: 28.9, label: 'A/C failure · temperature rising', icon: 'temp', anchor: V3(16.3, 15.0, -1.8), side: 'r' },
     leak: { t: 30.4, label: 'Water leak', icon: 'water', anchor: V3(-14.4, 9.8, -8.8), side: 'r' },
-    elecF: { t: 31.8, label: 'Electrical fault', icon: 'elec', anchor: V3(15.8, 3.0, -8.7), side: 'l' },
+    elecF: { t: 31.8, label: 'Electrical fault', icon: 'elec', anchor: V3(15.8, 3.0, -8.7), side: 'r' },
     elevF: { t: 33.5, label: 'Elevator malfunction', icon: 'elev', anchor: null, side: 'l' },
     fireF: { t: 35.0, label: 'Fire-safety warning', icon: 'bell', anchor: V3(9, 3.2, -4.6), side: 'l' },
     cctvF: { t: 36.4, label: 'CCTV observation · unauthorised presence', icon: 'cctv', anchor: V3(1.5, 3.6, 8.5), side: 'r' },
@@ -253,14 +254,14 @@ export function createFilm({ THREE, scene, camera, renderer, site, building, blo
         float p = fract(vUv.x*4.0 - uTime*0.22);
         float glow = smoothstep(0.18, 0.0, p) * uPulse;
         float a = lit*(0.65+0.35*glow) + head;
-        gl_FragColor = vec4(uColor*(0.8+2.0*glow+2.4*head), a*uAlpha);
+        gl_FragColor = vec4(uColor*(0.7+1.6*glow+1.0*head), a*uAlpha*0.9);
       }`,
   });
   const woMat = pathShader([1.0, 0.82, 0.42]);
   const woTube = new THREE.Mesh(new THREE.TubeGeometry(woCurve, 700, 0.13, 8, false), woMat); woTube.frustumCulled = false; woTube.renderOrder = 10;
   scene.add(woTube);
-  const woHead = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: new THREE.Color(2.2, 1.7, 0.8), blending: THREE.AdditiveBlending, transparent: true, depthWrite: false }));
-  woHead.scale.setScalar(2.2); woHead.renderOrder = 11; scene.add(woHead);
+  const woHead = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: new THREE.Color(1.2, 0.9, 0.4), blending: THREE.AdditiveBlending, transparent: true, depthWrite: false }));
+  woHead.scale.setScalar(1.6); woHead.renderOrder = 11; scene.add(woHead);
 
   // ---- scene 7: Technical Affairs (visual metaphor)
   const FN = [
@@ -334,7 +335,7 @@ export function createFilm({ THREE, scene, camera, renderer, site, building, blo
   hubLab.innerHTML = '<b>TECHNICAL AFFAIRS</b><i dir="rtl" lang="ar">الشؤون الفنية</i><span>Coordination · Monitoring · Oversight · Continuity</span>';
   overlay.appendChild(hubLab);
   const projP = V3(0, 0, 0);
-  const toScreen = (v) => { projP.copy(v).project(camera); return [(projP.x * 0.5 + 0.5) * W, (-projP.y * 0.5 + 0.5) * H]; };
+  const toScreen = (v) => { projP.copy(v).project(camera); return [(projP.x * 0.5 + 0.5) * OW, (-projP.y * 0.5 + 0.5) * OH]; };
 
   // ---- scene 8: green confirmation pins
   const OK = [
@@ -376,8 +377,8 @@ export function createFilm({ THREE, scene, camera, renderer, site, building, blo
     sunAt(t);
     const dim = sm(60.2, 62.5, t) * (1 - sm(74.2, 76.5, t));
     site.sun.intensity *= 1 - 0.62 * dim;
-    scene.environmentIntensity = 0.55 * (1 - 0.5 * dim);
-    renderer.toneMappingExposure = 0.95 * (1 - 0.0 * dim);
+    scene.environmentIntensity = 0.4 * (1 - 0.5 * dim);
+    renderer.toneMappingExposure = 0.85 - 0.1 * sm(78, 83, t);
     bloom.strength = 0.3 + 0.25 * dim;
 
     site.updateWalkers(t);

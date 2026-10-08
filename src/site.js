@@ -69,9 +69,9 @@ export function buildSite(scene) {
   // ---- palms (instanced fronds)
   const palms = [];
   for (const sx of [-1, 1]) {
-    for (let k = 0; k < 7; k++) palms.push([sx * 8.2, 16 + k * 8, 8 + R() * 3]);
-    for (let k = 0; k < 6; k++) palms.push([sx * (16 + R() * 14), 20 + k * 9 + R() * 3, 7 + R() * 4]);
-    palms.push([sx * 27, 14, 9]); palms.push([sx * 33, 15, 11]);
+    for (let k = 0; k < 3; k++) palms.push([sx * (24 + k * 2.5), 17 + k * 9, 8 + R() * 3]);
+    for (let k = 0; k < 3; k++) palms.push([sx * (15.5 + R() * 2), 24 + k * 12 + R() * 3, 7 + R() * 4]);
+    palms.push([sx * 31, 15, 9]);
   }
   const frondGeo = (() => {
     const L = 3.6, seg = 8, pos = [], uv = [], idx = [];
@@ -132,7 +132,7 @@ export function buildSite(scene) {
       const cyc = 46, s = ((t * w.speed + w.phase) % cyc);
       const z = 70 - s * 1.3;
       const toDoor = Math.max(0, 1 - Math.abs(z - 11) / 1.2);
-      w.p.visible = z > 9.3;
+      w.p.visible = z > 9.3 && (t < 12.5 || t > 79.5);
       const x = THREE.MathUtils.lerp(w.x0 + w.lane, w.lane * 0.5, THREE.MathUtils.smoothstep(z, 70, 14) * 0 + (1 - THREE.MathUtils.smoothstep(z, 12, 46)));
       w.p.position.set(x, 0.0, z); w.p.rotation.y = Math.PI + Math.atan2(-0.0, 1);
       walk(w.p, t * 6.2 * w.speed + w.phase);
@@ -156,12 +156,12 @@ export function buildSite(scene) {
     const dir = new THREE.Vector3().setFromSphericalCoords(1, phi, th);
     su.sunPosition.value.copy(dir);
     sun.position.copy(dir).multiplyScalar(110).add(sun.target.position);
-    sun.color.setRGB(1, 0.94 - 0.28 * warm, 0.86 - 0.5 * warm);
-    sun.intensity = 3.2 - 0.5 * warm;
-    hemi.intensity = 0.75 - 0.25 * warm;
+    sun.color.setRGB(1, 0.94 - 0.36 * warm, 0.86 - 0.6 * warm);
+    sun.intensity = 2.5 - 0.3 * warm;
+    hemi.intensity = 0.3 - 0.08 * warm;
     hemi.color.setRGB(0.8 - 0.1 * warm, 0.89 - 0.2 * warm, 1);
-    scene.fog.color.setRGB(0.85 + 0.05 * warm, 0.87 - 0.12 * warm, 0.86 - 0.28 * warm);
-    su.rayleigh.value = 1.2 + 1.3 * warm; su.turbidity.value = 4 + 4 * warm;
+    scene.fog.color.setRGB(0.85 + 0.15 * warm, 0.87 - 0.2 * warm, 0.86 - 0.4 * warm);
+    su.rayleigh.value = 1.2 + 1.8 * warm; su.turbidity.value = 4 + 6 * warm; su.mieCoefficient.value = 0.004 + 0.008 * warm;
   }
   return { site, sky, sun, setSun, updateWalkers, fronds, palms };
 }

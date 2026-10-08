@@ -15,7 +15,7 @@ const canvas = document.getElementById('gl');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance', preserveDrawingBuffer: capture });
 renderer.setPixelRatio(1);
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.95;
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.85;
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(36, W / H, 0.5, 2500);
@@ -28,13 +28,13 @@ site.setSun(42, 20, 0);
   const pm = new THREE.PMREMGenerator(renderer);
   const envScene = new THREE.Scene(); envScene.add(site.sky.clone());
   scene.environment = pm.fromScene(envScene, 0, 1, 3000).texture;
-  scene.environmentIntensity = 0.55;
+  scene.environmentIntensity = 0.4;
 }
 
 const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(W, H, { type: THREE.HalfFloatType, samples: 4 }));
 composer.setPixelRatio(1); composer.setSize(W, H);
 composer.addPass(new RenderPass(scene, camera));
-const bloom = new UnrealBloomPass(new THREE.Vector2(W, H), 0.32, 0.6, 1.0);
+const bloom = new UnrealBloomPass(new THREE.Vector2(W, H), 0.25, 0.5, 1.8);
 composer.addPass(bloom);
 composer.addPass(new OutputPass());
 
@@ -45,6 +45,7 @@ function fit() {
   stage.style.transform = capture ? 'none' : `scale(${s})`;
   if (!capture) stage.style.left = (innerWidth - W * s) / 2 + 'px';
   renderer.setSize(W, H, false);
+  stage.style.setProperty('--k', W / 1920);
 }
 fit(); addEventListener('resize', fit);
 

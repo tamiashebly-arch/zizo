@@ -6,7 +6,8 @@
 html,body{margin:0;background:#0b0d0e;overflow:hidden;font-family:Inter,NotoAr,sans-serif;color:#fff}
 #stage{position:absolute;left:0;top:0;transform-origin:0 0;background:#000;overflow:hidden}
 canvas{display:block;width:100%;height:100%}
-#overlay,#vignette,#caption,#finalsafe{position:absolute;inset:0;pointer-events:none}
+#vignette,#finalsafe{position:absolute;inset:0;pointer-events:none}
+#overlay,#caption{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;transform:scale(var(--k,1));pointer-events:none}
 #vignette{background:radial-gradient(ellipse at 50% 50%,transparent 58%,rgba(0,0,0,.38) 100%)}
 #ui{position:fixed;left:0;right:0;bottom:0;height:48px;display:flex;gap:12px;align-items:center;padding:0 16px;background:#111;z-index:9}
 #ui button{width:34px;height:30px;background:#222;color:#fff;border:1px solid #444;border-radius:4px;cursor:pointer}
@@ -32,11 +33,11 @@ body.capture #ui{display:none}
 .cap .no{font:300 54px/1 Inter;letter-spacing:.02em;color:var(--gold);padding-right:18px;border-right:1px solid rgba(255,255,255,.4)}
 .cap b{display:block;font-weight:500;font-size:28px;letter-spacing:.01em;text-shadow:0 2px 12px rgba(0,0,0,.55)}
 .cap i{display:block;font-style:normal;font-size:23px;opacity:.85;margin-top:2px;text-align:left;direction:rtl;font-family:NotoAr,Inter,sans-serif;text-shadow:0 2px 12px rgba(0,0,0,.55)}
-.chips{position:absolute;left:0;right:0;bottom:200px;display:flex;justify-content:center;gap:14px}
+.chips{position:absolute;left:0;right:0;top:56px;display:flex;justify-content:center;gap:14px}
 .chip{display:flex;gap:12px;align-items:center;padding:12px 20px;border-radius:14px;background:rgba(14,20,24,.7);backdrop-filter:blur(4px);border:1px solid rgba(255,90,70,.55);box-shadow:0 0 20px rgba(255,74,61,.2)}
 .chip b{display:block;font-weight:500;font-size:18px}.chip i{display:block;font-style:normal;font-size:16px;opacity:.8;font-family:NotoAr,Inter;direction:rtl;margin-top:2px}
 .chip svg{color:var(--red)}
-.msg{position:absolute;left:0;right:0;bottom:104px;text-align:center;font-size:30px;font-weight:500;text-shadow:0 2px 14px rgba(0,0,0,.7);opacity:0;padding:0 160px;line-height:1.3}
+.msg{position:absolute;left:0;right:0;bottom:180px;text-align:center;font-size:30px;font-weight:500;text-shadow:0 2px 14px rgba(0,0,0,.7);opacity:0;padding:0 160px;line-height:1.3}
 .msg i{display:block;font-style:normal;font-size:25px;opacity:.9;margin-top:6px;font-family:NotoAr,Inter;direction:rtl}
 .card{position:absolute;box-sizing:border-box;padding:calc(var(--w)*.045);border-radius:calc(var(--w)*.03);color:#fff;
   background:linear-gradient(180deg,rgba(12,22,28,.74),rgba(12,22,28,.6));border:1px solid var(--c);box-shadow:0 0 30px rgba(0,0,0,.35);
